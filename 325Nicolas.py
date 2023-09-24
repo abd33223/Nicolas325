@@ -48,6 +48,9 @@ selected_earthquake = st.selectbox("Select an Earthquake", df['title'].unique())
 # Check if the selected earthquake title exists
 magnitude_slider_value = df[df['title'] == selected_earthquake]['magnitude'].values[0] if selected_earthquake in df['title'].values else 0
 
+# Ensure magnitude_slider_value is an integer
+magnitude_slider_value = int(magnitude_slider_value)
+
 # Slider for magnitude
 magnitude_slider = st.slider("Magnitude", min_value=0, max_value=10, value=magnitude_slider_value)
 
