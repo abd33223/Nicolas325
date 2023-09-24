@@ -37,6 +37,14 @@ for dropdown in dropdowns:
     if selected_options[dropdown] != 'All':
         filtered_df = filtered_df[filtered_df[dropdown] == selected_options[dropdown]]
 
+# Debugging: Print filtered DataFrame info and unique values for important columns
+st.write("Filtered DataFrame Info:")
+st.write(filtered_df.info())
+st.write("Unique values for latitude, longitude, and year:")
+st.write(filtered_df['latitude'].unique())
+st.write(filtered_df['longitude'].unique())
+st.write(filtered_df['year'].unique())
+
 # Convert the 'date_time' column to datetime and extract years
 df['date_time'] = pd.to_datetime(df['date_time'])
 df['year'] = df['date_time'].dt.year
