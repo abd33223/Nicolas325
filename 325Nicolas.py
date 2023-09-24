@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 
 # Load earthquake data
 df = pd.read_csv("earthquake_data.csv")
@@ -46,8 +45,10 @@ st.write("## Interactive Visualization with Slider and Dropdown")
 # Dropdown to select earthquake
 selected_earthquake = st.selectbox("Select an Earthquake", df['title'].unique())
 
+# Check if the selected earthquake title exists
+magnitude_slider_value = df[df['title'] == selected_earthquake]['magnitude'].values[0] if selected_earthquake in df['title'].values else 0
+
 # Slider for magnitude
-magnitude_slider_value = df[df['title'] == selected_earthquake]['magnitude'].values[0]
 magnitude_slider = st.slider("Magnitude", min_value=0, max_value=10, value=magnitude_slider_value)
 
 # Display selected earthquake details
