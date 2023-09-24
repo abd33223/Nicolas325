@@ -57,42 +57,21 @@ for dropdown in dropdowns:
     if selected_options[dropdown] != 'All':
         filtered_df = filtered_df[filtered_df[dropdown] == selected_options[dropdown]]
 
-# Display earthquakes on a map with a time slider
-st.write("## Interactive Map with Time Slider")
-fig_map_time = px.scatter_geo(filtered_df, lat='latitude', lon='longitude', color='magnitude',
-                              animation_frame='year', projection="natural earth",
-                              title='Earthquake Locations with Time')
-fig_map_time.update_layout(updatemenus=[dict(type='buttons', showactive=False,
-                                              buttons=[dict(label='Play',
-                                                             method='animate',
-                                                             args=[None, dict(frame=dict(duration=100, redraw=True), fromcurrent=True, mode='immediate')]),
-                                                       dict(label='Pause',
-                                                             method='animate',
-                                                             args=[[None], dict(mode='immediate')])])])
-st.plotly_chart(fig_map_time)
-
-# Interactive visualization using dropdowns
-st.write("## Interactive Visualization with Dropdowns")
-
-# Dropdowns to select X and Y axes for scatter plot
+# Display scatter plot based on user-selected metrics
+st.write("## Scatter Plot")
 x_axis = st.selectbox("Select X-axis metric", ['magnitude', 'gap'])
 y_axis = st.selectbox("Select Y-axis metric", ['depth', 'nst'])
 
-# Create scatter plot based on user-selected metrics
 fig_scatter = px.scatter(filtered_df, x=x_axis, y=y_axis, color='magnitude', hover_name='location',
                          title=f'Scatter Plot of Earthquake Data ({x_axis} vs {y_axis})')
 st.plotly_chart(fig_scatter)
 
-# Third interactive visualization using user input
-st.write("## Interactive Magnitude Distribution")
-
-# Dropdown to select continent
-selected_continent_options = ['All'] + df['continent'].unique().tolist()
-selected_continent = st.selectbox("Select a Continent", selected_continent_options)
-
-# Filter data based on selected continent
-filtered_df = df[df['continent'] == selected_continent] if selected_continent != 'All' else df
-
-# Create histogram of earthquake magnitudes for the selected continent
-fig_histogram = px.histogram(filtered_df, x='magnitude', nbins=20, title=f'Magnitude Distribution in {selected_continent}')
+# Display histogram of earthquake magnitudes
+st.write("## Magnitude Distribution")
+fig_histogram = px.histogram(filtered_df, x='magnitude', nbins=20, title='Magnitude Distribution')
 st.plotly_chart(fig_histogram)
+
+# Display sunburst chart showing distribution by continent and country
+st.write("## Sunburst Chart")
+fig_sunburst = px.sunburst(filtered_df, path=['continent', 'country'], title='Earthquake Distribution by Continent and Country')
+st.plotly_chart(fig_sunburst)
