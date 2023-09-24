@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 
 # Load earthquake data
 df = pd.read_csv("earthquake_data.csv")
@@ -51,3 +50,13 @@ y_axis = st.selectbox("Select Y-axis metric", ['depth', 'magnitude', 'gap'])
 fig_scatter = px.scatter(df, x=x_axis, y=y_axis, color='magnitude', hover_name='location',
                          title=f'Scatter Plot of Earthquake Data ({x_axis} vs {y_axis})')
 st.plotly_chart(fig_scatter)
+
+# Third interactive visualization using user input
+st.write("## Interactive Magnitude Distribution")
+
+# Binning for magnitude distribution
+num_bins = st.slider("Select the number of bins", min_value=5, max_value=50, value=20)
+
+# Create histogram of earthquake magnitudes
+fig_histogram = px.histogram(df, x='magnitude', nbins=num_bins, title='Magnitude Distribution')
+st.plotly_chart(fig_histogram)
