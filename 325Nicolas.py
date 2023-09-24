@@ -19,9 +19,12 @@ st.subheader("Nicolas Araman")
 # Sidebar for filtering
 st.sidebar.write("## Filters")
 
-# Slide ranges for magnitude and depth
+# Slide ranges for magnitude, depth, dmin, gap, sig
 magnitude_range = st.sidebar.slider("Select Magnitude Range", float(df['magnitude'].min()), float(df['magnitude'].max()), (float(df['magnitude'].min()), float(df['magnitude'].max())))
 depth_range = st.sidebar.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
+dmin_range = st.sidebar.slider("Select Dmin Range", float(df['dmin'].min()), float(df['dmin'].max()), (float(df['dmin'].min()), float(df['dmin'].max())))
+gap_range = st.sidebar.slider("Select Gap Range", float(df['gap'].min()), float(df['gap'].max()), (float(df['gap'].min()), float(df['gap'].max())))
+sig_range = st.sidebar.slider("Select Sig Range", float(df['sig'].min()), float(df['sig'].max()), (float(df['sig'].min()), float(df['sig'].max())))
 
 # For Nst Range, ensure it starts with the minimum value
 nst_min = int(df['nst'].min())
@@ -33,8 +36,8 @@ year_min = int(df['year'].min())
 year_max = int(df['year'].max())
 year_range = st.sidebar.slider("Select Year Range", year_min, year_max, (year_min, year_max))
 
-# Dropdown menus
-dropdowns = ['alert', 'tsunami', 'sig', 'net', 'dmin', 'gap', 'magType', 'depth']
+# Dropdown menus for other options
+dropdowns = ['alert', 'tsunami', 'net', 'magType']
 selected_options = {}
 for dropdown in dropdowns:
     options = ['All'] + df[dropdown].unique().tolist()
@@ -44,6 +47,9 @@ for dropdown in dropdowns:
 # Filter data based on user selections
 filtered_df = df[(df['magnitude'] >= magnitude_range[0]) & (df['magnitude'] <= magnitude_range[1]) &
                  (df['depth'] >= depth_range[0]) & (df['depth'] <= depth_range[1]) &
+                 (df['dmin'] >= dmin_range[0]) & (df['dmin'] <= dmin_range[1]) &
+                 (df['gap'] >= gap_range[0]) & (df['gap'] <= gap_range[1]) &
+                 (df['sig'] >= sig_range[0]) & (df['sig'] <= sig_range[1]) &
                  (df['nst'] >= nst_range[0]) & (df['nst'] <= nst_range[1]) &
                  (df['year'] >= year_range[0]) & (df['year'] <= year_range[1])]
 
@@ -69,8 +75,8 @@ st.plotly_chart(fig_map_time)
 st.write("## Interactive Visualization with Dropdowns")
 
 # Dropdowns to select X and Y axes for scatter plot
-x_axis = st.selectbox("Select X-axis metric", ['magnitude', 'depth', 'gap'])
-y_axis = st.selectbox("Select Y-axis metric", ['depth', 'magnitude', 'gap'])
+x_axis = st.selectbox("Select X-axis metric", ['magnitude', 'gap'])
+y_axis = st.selectbox("Select Y-axis metric", ['depth', 'nst'])
 
 # Create scatter plot based on user-selected metrics
 fig_scatter = px.scatter(filtered_df, x=x_axis, y=y_axis, color='magnitude', hover_name='location',
