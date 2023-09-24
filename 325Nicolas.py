@@ -21,7 +21,7 @@ magnitude_range = st.sidebar.slider("Select Magnitude Range", float(df['magnitud
 depth_range = st.sidebar.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
 
 # Dropdown menus
-dropdowns = ['alert', 'tsunami', 'sig', 'net', 'nst', 'dmin', 'gap', 'magType', 'depth']
+dropdowns = ['alert', 'tsunami', 'sig', 'net', 'dmin', 'gap', 'magType', 'depth']
 selected_options = {}
 for dropdown in dropdowns:
     options = df[dropdown].unique().tolist()
@@ -29,24 +29,21 @@ for dropdown in dropdowns:
     selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
     selected_options[dropdown] = selected_option
 
+# Slider for 'nst'
+nst_range = st.sidebar.slider("Select Nst Range", int(df['nst'].min()), int(df['nst'].max()), (int(df['nst'].min()), int(df['nst'].max())))
+
+# Slider for selecting the year
+year_range = st.sidebar.slider("Select Year Range", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
+
 # Filter data based on user selections
 filtered_df = df[(df['magnitude'] >= magnitude_range[0]) & (df['magnitude'] <= magnitude_range[1]) &
-                 (df['depth'] >= depth_range[0]) & (df['depth'] <= depth_range[1])]
+                 (df['depth'] >= depth_range[0]) & (df['depth'] <= depth_range[1]) &
+                 (df['nst'] >= nst_range[0]) & (df['nst'] <= nst_range[1]) &
+                 (df['year'] >= year_range[0]) & (df['year'] <= year_range[1])]
 
 for dropdown in dropdowns:
     if selected_options[dropdown] != 'All':
         filtered_df = filtered_df[filtered_df[dropdown] == selected_options[dropdown]]
-
-# Extract the 'year' from the 'date_time' column
-filtered_df['year'] = pd.to_datetime(filtered_df['date_time']).dt.year
-
-# Debugging: Print filtered DataFrame info and unique values for important columns
-st.write("Filtered DataFrame Info:")
-st.write(filtered_df.info())
-st.write("Unique values for latitude, longitude, and year:")
-st.write(filtered_df['latitude'].unique())
-st.write(filtered_df['longitude'].unique())
-st.write(filtered_df['year'].unique())
 
 # Display earthquakes on a map with a time slider
 st.write("## Interactive Map with Time Slider")
