@@ -20,20 +20,37 @@ st.write(
     """
 )
 
-# Plotting earthquake locations
+# Sidebar for user options
+st.sidebar.title("Visualization Options")
+
+# Allow the user to select a specific continent
+selected_continent = st.sidebar.selectbox("Select a Continent", df["continent"].unique())
+
+# Filter the data based on the selected continent
+filtered_df = df[df["continent"] == selected_continent]
+
+# Plotting earthquake locations based on selected continent
 st.write("## Earthquake Locations")
-fig_map = px.scatter_geo(df, lat='latitude', lon='longitude', color='magnitude', hover_name='location',
-                         title='Earthquake Locations')
+fig_map = px.scatter_geo(filtered_df, lat='latitude', lon='longitude', color='magnitude', hover_name='location',
+                         title=f'Earthquake Locations in {selected_continent}')
 st.plotly_chart(fig_map)
 
 # Magnitude Distribution Over Time (Animated Histogram)
 st.write("## Magnitude Distribution Over Time")
-fig_histogram = px.histogram(df, x='magnitude', nbins=30, title='Magnitude Distribution Over Time')
+magnitude_min = st.sidebar.slider("Minimum Magnitude", min_value=min(df['magnitude']), max_value=max(df['magnitude']), value=min(df['magnitude']))
+magnitude_max = st.sidebar.slider("Maximum Magnitude", min_value=min(df['magnitude']), max_value=max(df['magnitude']), value=max(df['magnitude']))
+
+filtered_df_magnitude = df[(df['magnitude'] >= magnitude_min) & (df['magnitude'] <= magnitude_max)]
+fig_histogram = px.histogram(filtered_df_magnitude, x='magnitude', nbins=30, title='Magnitude Distribution Over Time')
 st.plotly_chart(fig_histogram)
 
 # 3D Scatter Plot
 st.write("## 3D Scatter Plot of Earthquake Data (Depth, Magnitude, Gap)")
-fig_3d_scatter = px.scatter_3d(df, x='depth', y='magnitude', z='gap', color='country',
+depth_min = st.sidebar.slider("Minimum Depth", min_value=min(df['depth']), max_value=max(df['depth']), value=min(df['depth']))
+depth_max = st.sidebar.slider("Maximum Depth", min_value=min(df['depth']), max_value=max(df['depth']), value=max(df['depth']))
+
+filtered_df_depth = df[(df['depth'] >= depth_min) & (df['depth'] <= depth_max)]
+fig_3d_scatter = px.scatter_3d(filtered_df_depth, x='depth', y='magnitude', z='gap', color='country',
                                 size='nst', opacity=0.7, hover_name='title',
                                 labels={'depth': 'Depth', 'magnitude': 'Magnitude', 'gap': 'Gap',
                                         'country': 'Country', 'nst': 'NST'},
@@ -42,7 +59,7 @@ st.plotly_chart(fig_3d_scatter)
 
 # Earthquake Density Contours by Magnitude
 st.write("## Earthquake Density Contours by Magnitude")
-fig_density_contour = px.density_contour(df, x='longitude', y='latitude', color='magnitude',
+fig_density_contour = px.density_contour(filtered_df, x='longitude', y='latitude', color='magnitude',
                                         marginal_x='histogram', marginal_y='histogram',
                                         labels={'longitude': 'Longitude', 'latitude': 'Latitude', 'magnitude': 'Magnitude'},
                                         title='Earthquake Density Contours by Magnitude')
