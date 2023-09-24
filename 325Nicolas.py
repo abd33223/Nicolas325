@@ -22,15 +22,14 @@ st.sidebar.write("## Filters")
 # Slide ranges for magnitude and depth
 magnitude_range = st.sidebar.slider("Select Magnitude Range", float(df['magnitude'].min()), float(df['magnitude'].max()), (float(df['magnitude'].min()), float(df['magnitude'].max())))
 depth_range = st.sidebar.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
-nst_range = st.sidebar.slider("Select Nst Range", int(df['nst'].min()), int(df['nst'].max()), (int(df['nst'].min()), int(df['nst'].max())))
+nst_range = st.sidebar.slider("Select Nst Range", int(df['nst'].min()), int(df['nst'].max()), (int(df['nst'].min()), int(df['nst'].max())), int(df['nst'].min()))
 year_range = st.sidebar.slider("Select Year Range", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
 
 # Dropdown menus
 dropdowns = ['alert', 'tsunami', 'sig', 'net', 'dmin', 'gap', 'magType', 'depth']
 selected_options = {}
 for dropdown in dropdowns:
-    options = df[dropdown].unique().tolist()
-    options.append('All')
+    options = ['All'] + df[dropdown].unique().tolist()
     selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
     selected_options[dropdown] = selected_option
 
@@ -74,7 +73,8 @@ st.plotly_chart(fig_scatter)
 st.write("## Interactive Magnitude Distribution")
 
 # Dropdown to select continent
-selected_continent = st.selectbox("Select a Continent", ['All'] + df['continent'].unique().tolist())
+selected_continent_options = ['All'] + df['continent'].unique().tolist()
+selected_continent = st.selectbox("Select a Continent", selected_continent_options)
 
 # Filter data based on selected continent
 filtered_df = df[df['continent'] == selected_continent] if selected_continent != 'All' else df
