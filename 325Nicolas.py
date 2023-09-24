@@ -13,21 +13,12 @@ st.title("Earthquakes")
 st.header("MSBA 325")
 st.subheader("Nicolas Araman")
 
-# Paragraph about high magnitude earthquakes
-st.write(
-    """
-    High magnitude earthquakes can cause significant devastation, including widespread damage to buildings, 
-    infrastructure, and loss of lives. The intensity and impact of these earthquakes highlight the urgent need 
-    for preparedness, monitoring, and proactive measures to mitigate potential damage and save lives.
-    """
-)
-
-# Filters section
-st.write("## Filters")
+# Sidebar for filtering
+st.sidebar.write("## Filters")
 
 # Slide ranges for magnitude and depth
-magnitude_range = st.slider("Select Magnitude Range", float(df['magnitude'].min()), float(df['magnitude'].max()), (float(df['magnitude'].min()), float(df['magnitude'].max())))
-depth_range = st.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
+magnitude_range = st.sidebar.slider("Select Magnitude Range", float(df['magnitude'].min()), float(df['magnitude'].max()), (float(df['magnitude'].min()), float(df['magnitude'].max())))
+depth_range = st.sidebar.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
 
 # Dropdown menus
 dropdowns = ['alert', 'tsunami', 'sig', 'net', 'nst', 'dmin', 'gap', 'magType', 'depth']
@@ -35,7 +26,7 @@ selected_options = {}
 for dropdown in dropdowns:
     options = df[dropdown].unique().tolist()
     options.append('All')
-    selected_option = st.selectbox(f"Select {dropdown.capitalize()}", options)
+    selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
     selected_options[dropdown] = selected_option
 
 # Filter data based on user selections
@@ -51,6 +42,7 @@ df['date_time'] = pd.to_datetime(df['date_time'])
 df['year'] = df['date_time'].dt.year
 
 # Display earthquakes on a map with a time slider
+st.write("## Interactive Map with Time Slider")
 fig_map_time = px.scatter_geo(filtered_df, lat='latitude', lon='longitude', color='magnitude',
                               animation_frame='year', projection="natural earth",
                               title='Earthquake Locations with Time')
