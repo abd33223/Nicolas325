@@ -22,16 +22,37 @@ st.write(
     """
 )
 
-# Interactive map with time slider
-st.write("## Interactive Map with Time Slider")
+# Filters section
+st.write("## Filters")
 
-# Convert the 'date_time' column to datetime and sort in increasing order
+# Slide ranges for magnitude and depth
+magnitude_range = st.slider("Select Magnitude Range", float(df['magnitude'].min()), float(df['magnitude'].max()), (float(df['magnitude'].min()), float(df['magnitude'].max())))
+depth_range = st.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
+
+# Dropdown menus
+dropdowns = ['alert', 'tsunami', 'sig', 'net', 'nst', 'dmin', 'gap', 'magType', 'depth']
+selected_options = {}
+for dropdown in dropdowns:
+    options = df[dropdown].unique().tolist()
+    options.append('All')
+    selected_option = st.selectbox(f"Select {dropdown.capitalize()}", options)
+    selected_options[dropdown] = selected_option
+
+# Filter data based on user selections
+filtered_df = df[(df['magnitude'] >= magnitude_range[0]) & (df['magnitude'] <= magnitude_range[1]) &
+                 (df['depth'] >= depth_range[0]) & (df['depth'] <= depth_range[1])]
+
+for dropdown in dropdowns:
+    if selected_options[dropdown] != 'All':
+        filtered_df = filtered_df[filtered_df[dropdown] == selected_options[dropdown]]
+
+# Convert the 'date_time' column to datetime and extract years
 df['date_time'] = pd.to_datetime(df['date_time'])
-df.sort_values(by='date_time', inplace=True)
+df['year'] = df['date_time'].dt.year
 
 # Display earthquakes on a map with a time slider
-fig_map_time = px.scatter_geo(df, lat='latitude', lon='longitude', color='magnitude',
-                              animation_frame='date_time', projection="natural earth",
+fig_map_time = px.scatter_geo(filtered_df, lat='latitude', lon='longitude', color='magnitude',
+                              animation_frame='year', projection="natural earth",
                               title='Earthquake Locations with Time')
 fig_map_time.update_layout(updatemenus=[dict(type='buttons', showactive=False,
                                               buttons=[dict(label='Play',
@@ -50,7 +71,7 @@ x_axis = st.selectbox("Select X-axis metric", ['magnitude', 'depth', 'gap'])
 y_axis = st.selectbox("Select Y-axis metric", ['depth', 'magnitude', 'gap'])
 
 # Create scatter plot based on user-selected metrics
-fig_scatter = px.scatter(df, x=x_axis, y=y_axis, color='magnitude', hover_name='location',
+fig_scatter = px.scatter(filtered_df, x=x_axis, y=y_axis, color='magnitude', hover_name='location',
                          title=f'Scatter Plot of Earthquake Data ({x_axis} vs {y_axis})')
 st.plotly_chart(fig_scatter)
 
