@@ -8,6 +8,9 @@ df = pd.read_csv("earthquake_data.csv")
 # Remove NaN values from the 'continent' column
 df = df.dropna(subset=['continent'])
 
+# Extract year from 'date_time'
+df['year'] = pd.to_datetime(df['date_time']).dt.year
+
 # Introductory page content
 st.title("Earthquakes")
 st.header("MSBA 325")
