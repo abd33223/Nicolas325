@@ -59,10 +59,9 @@ st.write("## Interactive Magnitude Distribution")
 
 # Dropdown to select continent
 selected_continent = st.selectbox("Select a Continent", ['All'] + df['continent'].unique().tolist())
-if selected_continent != 'All':
-    filtered_df = df[df['continent'] == selected_continent]
-else:
-    filtered_df = df
+
+# Filter data based on selected continent
+filtered_df = df[df['continent'] == selected_continent] if selected_continent != 'All' else df
 
 # Create histogram of earthquake magnitudes for the selected continent
 fig_histogram = px.histogram(filtered_df, x='magnitude', nbins=20, title=f'Magnitude Distribution in {selected_continent}')
