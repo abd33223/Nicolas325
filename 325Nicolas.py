@@ -23,8 +23,11 @@ st.write(
 # Sidebar for user options
 st.sidebar.title("Visualization Options")
 
+# Filter out NaN values from the continent column
+valid_continents = df["continent"].dropna().unique()
+
 # Allow the user to select a specific continent
-selected_continent = st.sidebar.selectbox("Select a Continent", df["continent"].unique())
+selected_continent = st.sidebar.selectbox("Select a Continent", valid_continents)
 
 # Filter the data based on the selected continent
 filtered_df = df[df["continent"] == selected_continent]
