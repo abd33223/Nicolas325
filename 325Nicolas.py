@@ -22,8 +22,16 @@ st.sidebar.write("## Filters")
 # Slide ranges for magnitude and depth
 magnitude_range = st.sidebar.slider("Select Magnitude Range", float(df['magnitude'].min()), float(df['magnitude'].max()), (float(df['magnitude'].min()), float(df['magnitude'].max())))
 depth_range = st.sidebar.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
-nst_range = st.sidebar.slider("Select Nst Range", int(df['nst'].min()), int(df['nst'].max()), (int(df['nst'].min()), int(df['nst'].max())), int(df['nst'].min()))
-year_range = st.sidebar.slider("Select Year Range", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
+
+# For Nst Range, ensure it starts with the minimum value
+nst_min = int(df['nst'].min())
+nst_max = int(df['nst'].max())
+nst_range = st.sidebar.slider("Select Nst Range", nst_min, nst_max, (nst_min, nst_max))
+
+# For Year Range, ensure it starts with the minimum value
+year_min = int(df['year'].min())
+year_max = int(df['year'].max())
+year_range = st.sidebar.slider("Select Year Range", year_min, year_max, (year_min, year_max))
 
 # Dropdown menus
 dropdowns = ['alert', 'tsunami', 'sig', 'net', 'dmin', 'gap', 'magType', 'depth']
