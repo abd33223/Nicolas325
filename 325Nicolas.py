@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 # Load earthquake data
 df = pd.read_csv("earthquake_data.csv")
@@ -39,21 +40,14 @@ fig_map_time.update_layout(updatemenus=[dict(type='buttons', showactive=False,
                                                              args=[[None], dict(mode='immediate')])])])
 st.plotly_chart(fig_map_time)
 
-# Interactive visualization using slider and dropdown
-st.write("## Interactive Visualization with Slider and Dropdown")
+# Interactive visualization using dropdowns
+st.write("## Interactive Visualization with Dropdowns")
 
-# Dropdown to select earthquake
-selected_earthquake = st.selectbox("Select an Earthquake", df['title'].unique())
+# Dropdowns to select X and Y axes for scatter plot
+x_axis = st.selectbox("Select X-axis metric", ['magnitude', 'depth', 'gap'])
+y_axis = st.selectbox("Select Y-axis metric", ['depth', 'magnitude', 'gap'])
 
-# Check if the selected earthquake title exists
-magnitude_slider_value = df[df['title'] == selected_earthquake]['magnitude'].values[0] if selected_earthquake in df['title'].values else 0
-
-# Ensure magnitude_slider_value is an integer
-magnitude_slider_value = int(magnitude_slider_value)
-
-# Slider for magnitude
-magnitude_slider = st.slider("Magnitude", min_value=0, max_value=10, value=magnitude_slider_value)
-
-# Display selected earthquake details
-st.write(f"Selected Earthquake: {selected_earthquake}")
-st.write(f"Magnitude: {magnitude_slider}")
+# Create scatter plot based on user-selected metrics
+fig_scatter = px.scatter(df, x=x_axis, y=y_axis, color='magnitude', hover_name='location',
+                         title=f'Scatter Plot of Earthquake Data ({x_axis} vs {y_axis})')
+st.plotly_chart(fig_scatter)
