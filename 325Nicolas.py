@@ -5,6 +5,9 @@ import plotly.express as px
 # Load earthquake data
 df = pd.read_csv("earthquake_data.csv")
 
+# Remove NaN values from the 'continent' column
+df = df.dropna(subset=['continent'])
+
 # Introductory page content
 st.title("Earthquakes")
 st.header("MSBA 325")
@@ -54,9 +57,13 @@ st.plotly_chart(fig_scatter)
 # Third interactive visualization using user input
 st.write("## Interactive Magnitude Distribution")
 
-# Binning for magnitude distribution
-num_bins = st.slider("Select the number of bins", min_value=5, max_value=50, value=20)
+# Dropdown to select continent
+selected_continent = st.selectbox("Select a Continent", ['All'] + df['continent'].unique().tolist())
+if selected_continent != 'All':
+    filtered_df = df[df['continent'] == selected_continent]
+else:
+    filtered_df = df
 
-# Create histogram of earthquake magnitudes
-fig_histogram = px.histogram(df, x='magnitude', nbins=num_bins, title='Magnitude Distribution')
+# Create histogram of earthquake magnitudes for the selected continent
+fig_histogram = px.histogram(filtered_df, x='magnitude', nbins=20, title=f'Magnitude Distribution in {selected_continent}')
 st.plotly_chart(fig_histogram)
