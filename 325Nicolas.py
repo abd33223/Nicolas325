@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 # Load earthquake data
 df = pd.read_csv("earthquake_data.csv")
@@ -10,67 +11,45 @@ st.title("Earthquakes")
 st.header("MSBA 325")
 st.subheader("Nicolas Araman")
 
+# Paragraph about high magnitude earthquakes
+st.write(
+    """
+    High magnitude earthquakes can cause significant devastation, including widespread damage to buildings, 
+    infrastructure, and loss of lives. The intensity and impact of these earthquakes highlight the urgent need 
+    for preparedness, monitoring, and proactive measures to mitigate potential damage and save lives.
+    """
+)
+
 # Interactive map with time slider
 st.write("## Interactive Map with Time Slider")
 
-# Convert the 'date_time' column to datetime
+# Convert the 'date_time' column to datetime and sort in increasing order
 df['date_time'] = pd.to_datetime(df['date_time'])
+df.sort_values(by='date_time', inplace=True)
 
 # Display earthquakes on a map with a time slider
 fig_map_time = px.scatter_geo(df, lat='latitude', lon='longitude', color='magnitude',
                               animation_frame='date_time', projection="natural earth",
                               title='Earthquake Locations with Time')
+fig_map_time.update_layout(updatemenus=[dict(type='buttons', showactive=False,
+                                              buttons=[dict(label='Play',
+                                                             method='animate',
+                                                             args=[None, dict(frame=dict(duration=100, redraw=True), fromcurrent=True, mode='immediate')]),
+                                                       dict(label='Pause',
+                                                             method='animate',
+                                                             args=[[None], dict(mode='immediate')])])])
 st.plotly_chart(fig_map_time)
 
-# Interactive game-like visualization
-st.write("## Interactive Game-like Visualization")
+# Interactive visualization using slider and dropdown
+st.write("## Interactive Visualization with Slider and Dropdown")
 
-# Generate a scatter plot with a hidden target point (representing the earthquake location)
-target_location = (df['latitude'][0], df['longitude'][0])  # Using the first earthquake's location
+# Dropdown to select earthquake
+selected_earthquake = st.selectbox("Select an Earthquake", df['title'].unique())
 
-# User input for guessing the earthquake location
-user_guess_latitude = st.slider("Guess the Latitude", min_value=-90.0, max_value=90.0, step=0.1)
-user_guess_longitude = st.slider("Guess the Longitude", min_value=-180.0, max_value=180.0, step=0.1)
+# Slider for magnitude
+magnitude_slider_value = df[df['title'] == selected_earthquake]['magnitude'].values[0]
+magnitude_slider = st.slider("Magnitude", min_value=0, max_value=10, value=magnitude_slider_value)
 
-# Plot the target point and the user's guess
-fig_game = go.Figure()
-
-fig_game.add_trace(go.Scattergeo(
-    lat=[target_location[0]],
-    lon=[target_location[1]],
-    mode='markers',
-    marker=dict(
-        size=10,
-        color='red',
-        symbol='x'
-    ),
-    name='Actual Location'
-))
-
-fig_game.add_trace(go.Scattergeo(
-    lat=[user_guess_latitude],
-    lon=[user_guess_longitude],
-    mode='markers',
-    marker=dict(
-        size=10,
-        color='blue',
-        symbol='circle'
-    ),
-    name='Your Guess'
-))
-
-fig_game.update_layout(
-    geo=dict(
-        projection_scale=2,
-        center=dict(lat=0, lon=0),
-        visible=False
-    ),
-    title="Earthquake Location Guessing Game"
-)
-
-# Provide feedback to the user based on the distance between the target and the guess
-distance = ((user_guess_latitude - target_location[0]) ** 2 +
-            (user_guess_longitude - target_location[1]) ** 2) ** 0.5
-
-st.plotly_chart(fig_game)
-st.write(f"Distance to target: {distance:.2f} degrees")
+# Display selected earthquake details
+st.write(f"Selected Earthquake: {selected_earthquake}")
+st.write(f"Magnitude: {magnitude_slider}")
