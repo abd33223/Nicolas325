@@ -22,6 +22,8 @@ st.sidebar.write("## Filters")
 # Slide ranges for magnitude and depth
 magnitude_range = st.sidebar.slider("Select Magnitude Range", float(df['magnitude'].min()), float(df['magnitude'].max()), (float(df['magnitude'].min()), float(df['magnitude'].max())))
 depth_range = st.sidebar.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
+nst_range = st.sidebar.slider("Select Nst Range", int(df['nst'].min()), int(df['nst'].max()), (int(df['nst'].min()), int(df['nst'].max())))
+year_range = st.sidebar.slider("Select Year Range", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
 
 # Dropdown menus
 dropdowns = ['alert', 'tsunami', 'sig', 'net', 'dmin', 'gap', 'magType', 'depth']
@@ -31,12 +33,6 @@ for dropdown in dropdowns:
     options.append('All')
     selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
     selected_options[dropdown] = selected_option
-
-# Slider for 'nst'
-nst_range = st.sidebar.slider("Select Nst Range", int(df['nst'].min()), int(df['nst'].max()), (int(df['nst'].min()), int(df['nst'].max())))
-
-# Slider for selecting the year
-year_range = st.sidebar.slider("Select Year Range", int(df['year'].min()), int(df['year'].max()), (int(df['year'].min()), int(df['year'].max())))
 
 # Filter data based on user selections
 filtered_df = df[(df['magnitude'] >= magnitude_range[0]) & (df['magnitude'] <= magnitude_range[1]) &
