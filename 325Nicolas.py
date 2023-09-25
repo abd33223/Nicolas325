@@ -19,6 +19,18 @@ st.subheader("Nicolas Araman")
 # Sidebar for filtering
 st.sidebar.write("## Filters")
 
+# Dropdown menus for other options
+dropdowns = ['alert', 'tsunami', 'net', 'magType']
+selected_options = {}
+for dropdown in dropdowns:
+    options = ['All'] + df[dropdown].unique().tolist()
+    selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
+    selected_options[dropdown] = selected_option
+
+# Dropdown to select continent
+selected_continent_options = ['All'] + df['continent'].unique().tolist()
+selected_continent = st.sidebar.selectbox("Select a Continent", selected_continent_options)
+
 # Slide ranges for magnitude, depth, dmin, gap, sig
 magnitude_range = st.sidebar.slider("Select Magnitude Range", float(df['magnitude'].min()), float(df['magnitude'].max()), (float(df['magnitude'].min()), float(df['magnitude'].max())))
 depth_range = st.sidebar.slider("Select Depth Range", float(df['depth'].min()), float(df['depth'].max()), (float(df['depth'].min()), float(df['depth'].max())))
@@ -35,18 +47,6 @@ nst_range = st.sidebar.slider("Select Nst Range", nst_min, nst_max, (nst_min, ns
 year_min = int(df['year'].min())
 year_max = int(df['year'].max())
 year_range = st.sidebar.slider("Select Year Range", year_min, year_max, (year_min, year_max))
-
-# Dropdown menus for other options
-dropdowns = ['alert', 'tsunami', 'net', 'magType']
-selected_options = {}
-for dropdown in dropdowns:
-    options = ['All'] + df[dropdown].unique().tolist()
-    selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
-    selected_options[dropdown] = selected_option
-
-# Slider for filtering by continent
-selected_continent_options = ['All'] + df['continent'].unique().tolist()
-selected_continent = st.sidebar.selectbox("Select a Continent", selected_continent_options)
 
 # Filter data based on user selections
 filtered_df = df[(df['magnitude'] >= magnitude_range[0]) & (df['magnitude'] <= magnitude_range[1]) &
