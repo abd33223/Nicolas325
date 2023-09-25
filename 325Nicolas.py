@@ -44,6 +44,10 @@ for dropdown in dropdowns:
     selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
     selected_options[dropdown] = selected_option
 
+# Slider for filtering by continent
+selected_continent_options = ['All'] + df['continent'].unique().tolist()
+selected_continent = st.sidebar.selectbox("Select a Continent", selected_continent_options)
+
 # Filter data based on user selections
 filtered_df = df[(df['magnitude'] >= magnitude_range[0]) & (df['magnitude'] <= magnitude_range[1]) &
                  (df['depth'] >= depth_range[0]) & (df['depth'] <= depth_range[1]) &
@@ -56,6 +60,9 @@ filtered_df = df[(df['magnitude'] >= magnitude_range[0]) & (df['magnitude'] <= m
 for dropdown in dropdowns:
     if selected_options[dropdown] != 'All':
         filtered_df = filtered_df[filtered_df[dropdown] == selected_options[dropdown]]
+
+# Filter data based on selected continent
+filtered_df = filtered_df[df['continent'] == selected_continent] if selected_continent != 'All' else filtered_df
 
 # Display earthquakes on a map with a time slider
 st.write("## Interactive Map with Time Slider")
@@ -85,13 +92,6 @@ st.plotly_chart(fig_scatter)
 
 # Third interactive visualization using user input
 st.write("## Interactive Magnitude Distribution")
-
-# Dropdown to select continent
-selected_continent_options = ['All'] + df['continent'].unique().tolist()
-selected_continent = st.selectbox("Select a Continent", selected_continent_options)
-
-# Filter data based on selected continent
-filtered_df = df[df['continent'] == selected_continent] if selected_continent != 'All' else df
 
 # Create histogram of earthquake magnitudes for the selected continent
 fig_histogram = px.histogram(filtered_df, x='magnitude', nbins=20, title=f'Magnitude Distribution in {selected_continent}')
