@@ -29,13 +29,13 @@ st.sidebar.write("### General Filters")
 dropdowns = ['alert', 'tsunami', 'net', 'magType']
 selected_options = {}
 for dropdown in dropdowns:
-    options = ['All'] + df[dropdown].unique().tolist()
+    options = ['All'] + sorted(df[dropdown].unique().tolist())
     selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
-    selected_options[dropdown] = selected_option
+    selected_options[dropdown] = None if selected_option == 'All' else selected_option
 
 # Dropdown to select continent
 st.sidebar.write("### Geographic Filter")
-selected_continent_options = ['All'] + df['continent'].unique().tolist()
+selected_continent_options = ['All'] + sorted(df['continent'].unique().tolist())
 selected_continent = st.sidebar.selectbox("Select a Continent", selected_continent_options)
 
 st.sidebar.write("### Numeric Filters")
@@ -52,7 +52,24 @@ year_min = int(df['year'].min())
 year_max = int(df['year'].max())
 year_range = st.sidebar.slider("Year (year of the earthquake)", year_min, year_max, (year_min, year_max))
 
-# Filtering process remains unchanged
+# Filtering process
+filtered_df = df.copy()
+for dropdown in dropdowns:
+    if selected_options[dropdown]:
+        filtered_df = filtered_df[filtered_df[dropdown] == selected_options[dropdown]]
+
+filtered_df = filtered_df[
+    (filtered_df['magnitude'] >= magnitude_range[0]) & (filtered_df['magnitude'] <= magnitude_range[1]) &
+    (filtered_df['depth'] >= depth_range[0]) & (filtered_df['depth'] <= depth_range[1]) &
+    (filtered_df['dmin'] >= dmin_range[0]) & (filtered_df['dmin'] <= dmin_range[1]) &
+    (filtered_df['gap'] >= gap_range[0]) & (filtered_df['gap'] <= gap_range[1]) &
+    (filtered_df['sig'] >= sig_range[0]) & (filtered_df['sig'] <= sig_range[1]) &
+    (filtered_df['nst'] >= nst_range[0]) & (filtered_df['nst'] <= nst_range[1]) &
+    (filtered_df['year'] >= year_range[0]) & (filtered_df['year'] <= year_range[1])
+]
+
+if selected_continent != 'All':
+    filtered_df = filtered_df[filtered_df['continent'] == selected_continent]
 
 # Display earthquakes on a map with a time slider
 st.write("## Interactive Map with Time Slider")
