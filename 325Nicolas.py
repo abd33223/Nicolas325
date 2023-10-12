@@ -13,6 +13,8 @@ df['year'] = pd.to_datetime(df['date_time']).dt.year
 
 # Introductory page content
 st.title("Earthquakes")
+st.write("Earthquakes are natural disasters caused by the sudden release of energy in the Earth's crust, resulting in seismic waves. Their devastating impact can lead to loss of lives, property damage, and tsunamis.")
+
 st.header("MSBA 325")
 st.subheader("Nicolas Araman")
 
@@ -66,6 +68,7 @@ filtered_df = filtered_df[df['continent'] == selected_continent] if selected_con
 
 # Display earthquakes on a map with a time slider
 st.write("## Interactive Map with Time Slider")
+st.write("This map visualizes the global distribution of earthquakes over time. By playing the time slider, users can observe the chronology of seismic events and identify patterns or trends over the years.")
 fig_map_time = px.scatter_geo(filtered_df, lat='latitude', lon='longitude', color='magnitude',
                               animation_frame='year', projection="natural earth",
                               title='Earthquake Locations with Time')
@@ -80,19 +83,15 @@ st.plotly_chart(fig_map_time)
 
 # Interactive visualization using dropdowns
 st.write("## Interactive Visualization with Dropdowns")
-
-# Dropdowns to select X and Y axes for scatter plot
+st.write("This scatter plot allows users to compare two metrics of their choice, such as magnitude vs depth. By analyzing the relationship between these metrics, one can derive insights into the nature and impact of different earthquakes.")
 x_axis = st.selectbox("Select X-axis metric", ['magnitude', 'gap'])
 y_axis = st.selectbox("Select Y-axis metric", ['depth', 'nst'])
-
-# Create scatter plot based on user-selected metrics
 fig_scatter = px.scatter(filtered_df, x=x_axis, y=y_axis, color='magnitude', hover_name='location',
                          title=f'Scatter Plot of Earthquake Data ({x_axis} vs {y_axis})')
 st.plotly_chart(fig_scatter)
 
 # Third interactive visualization using user input
 st.write("## Interactive Magnitude Distribution")
-
-# Create histogram of earthquake magnitudes for the selected continent
+st.write(f"This histogram showcases the distribution of earthquake magnitudes for the selected continent. It provides insights into the frequency of different magnitude earthquakes, helping in understanding the seismic activity in a region.")
 fig_histogram = px.histogram(filtered_df, x='magnitude', nbins=20, title=f'Magnitude Distribution in {selected_continent}')
 st.plotly_chart(fig_histogram)
