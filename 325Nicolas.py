@@ -29,8 +29,8 @@ st.sidebar.write("### General Filters")
 dropdowns = ['alert', 'tsunami', 'net', 'magType']
 selected_options = {}
 for dropdown in dropdowns:
-    options = ['All'] + sorted(df[dropdown].unique().tolist())
-    selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", options)
+    options = ['All'] + list(df[dropdown].astype(str).unique())
+    selected_option = st.sidebar.selectbox(f"Select {dropdown.capitalize()}", sorted(options))
     selected_options[dropdown] = None if selected_option == 'All' else selected_option
 
 # Dropdown to select continent
