@@ -18,6 +18,35 @@ st.write("Earthquakes are natural disasters caused by the sudden release of ener
 st.header("MSBA 325")
 st.subheader("Nicolas Araman")
 
+# Introduction to the Dataset Columns
+st.write("## Dataset Columns Description")
+st.write("Here's a description of each column in the earthquake dataset:")
+
+column_descriptions = {
+    'magnitude': "Magnitude measures the energy released by an earthquake on the Richter scale.",
+    'date_time': "The date and time when the earthquake occurred.",
+    'cdi': "The Community Determined Intensity (CDI) value, representing the intensity of shaking experienced by the community.",
+    'mmi': "The Modified Mercalli Intensity (MMI) value, providing a measure of shaking intensity and its effects.",
+    'alert': "An alert level indicating the severity of the earthquake (e.g., 'green,' 'yellow,' 'orange,' 'red').",
+    'tsunami': "Indicates whether the earthquake generated a tsunami (1 for yes, 0 for no).",
+    'sig': "The significance of the earthquake event.",
+    'net': "The seismic network or agency that reported the earthquake.",
+    'nst': "The number of reporting seismic stations.",
+    'dmin': "The minimum distance to the earthquake in degrees.",
+    'gap': "The azimuthal gap, representing the gap in coverage between seismic stations for the earthquake event.",
+    'magType': "The type of magnitude scale used to measure the earthquake (e.g., 'mb' for body-wave magnitude).",
+    'depth': "The depth at which the earthquake occurred in kilometers below the Earth's surface.",
+    'latitude': "The latitude coordinate of the earthquake's epicenter.",
+    'longitude': "The longitude coordinate of the earthquake's epicenter.",
+    'location': "A description of the earthquake's location or region.",
+    'continent': "The continent on which the earthquake occurred.",
+    'country': "The country where the earthquake's epicenter is located."
+}
+
+# Display column descriptions
+for column, description in column_descriptions.items():
+    st.write(f"- **{column.capitalize()}:** {description}")
+
 # Sidebar for filtering
 st.sidebar.write("## Filters")
 
